@@ -1,5 +1,7 @@
 # Quality-Momentum Factor Strategy
 
+> **Live tracking begins June 5, 2026 (first Friday of June).** The `picks/_dry_runs/` folder contains pre-launch test runs used to validate the pipeline.
+
 A systematic long-only equity strategy that screens the S&P 500 using
 price momentum, low volatility, and (in live mode) quality / return-on-assets.
 Built as a recruiting project with the goal of producing a 12+ month

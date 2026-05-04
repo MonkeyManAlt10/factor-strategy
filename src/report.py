@@ -124,8 +124,16 @@ def plot_cumulative_returns(
     strategy_returns: pd.Series,
     benchmark_returns: pd.Series,
     filename: str = "cumulative_returns.png",
+    extra_series: list[tuple[pd.Series, str]] | None = None,
 ) -> Path:
-    """Save a cumulative-wealth chart to results/."""
+    """Save a cumulative-wealth chart to results/.
+
+    Parameters
+    ----------
+    extra_series:
+        Optional list of (returns_series, label) tuples to plot alongside the
+        primary strategy.  Used to overlay the top-10 comparison portfolio.
+    """
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     common = strategy_returns.index.intersection(benchmark_returns.index)
@@ -133,9 +141,15 @@ def plot_cumulative_returns(
     b = (1 + benchmark_returns.loc[common]).cumprod()
 
     fig, ax = plt.subplots(figsize=(12, 6))
-    ax.plot(s.index, s.values, label="Strategy (top-50 quality-momentum)", linewidth=2)
-    ax.plot(b.index, b.values, label="SPY (benchmark)", linewidth=2, linestyle="--", alpha=0.8)
-    ax.set_title("Cumulative Returns: Quality-Momentum Strategy vs SPY", fontsize=14)
+    ax.plot(s.index, s.values, label="Top-50 quality-momentum", linewidth=2, color="steelblue")
+    if extra_series:
+        colors = ["darkorange", "seagreen", "mediumpurple"]
+        for (extra_ret, extra_label), color in zip(extra_series, colors):
+            ec = extra_ret.index.intersection(benchmark_returns.index)
+            es = (1 + extra_ret.loc[ec]).cumprod()
+            ax.plot(es.index, es.values, label=extra_label, linewidth=2, color=color)
+    ax.plot(b.index, b.values, label="SPY (benchmark)", linewidth=1.5, linestyle="--", alpha=0.8, color="black")
+    ax.set_title("Cumulative Returns: Quality-Momentum Strategies vs SPY", fontsize=14)
     ax.set_ylabel("Growth of $1")
     ax.set_xlabel("Date")
     ax.legend()

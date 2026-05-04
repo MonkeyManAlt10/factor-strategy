@@ -2,7 +2,10 @@
 
 ## What This Strategy Does and Why
 
-This project implements a systematic, long-only equity strategy that selects stocks from the S&P 500 universe using two quantitative signals: price momentum and low volatility. Once a month, the strategy scores every stock on those two factors, ranks them from best to worst, and holds the top 50 in an equal-weight portfolio until the next rebalance.
+This project implements a systematic, long-only equity strategy that selects stocks from the S&P 500 universe using two quantitative signals: price momentum and low volatility. Two portfolio variants are tracked in parallel:
+
+- **Top-50 (primary):** Each month the strategy scores every stock, ranks them, and holds the top 50 in an equal-weight portfolio (2% each).
+- **Top-10 (concentrated comparison):** Same scoring, same rebalance schedule, but holds only the top 10 names (10% each). Included as a parallel live experiment to compare concentrated vs. diversified construction over time. **The top-10 has not been validated out-of-sample.** Higher concentration implies materially higher volatility and drawdown risk.
 
 The motivation is straightforward. Academic finance has documented a handful of persistent return premia — patterns in stock returns that appear to compensate investors for bearing risk or exploiting behavioral inefficiencies. This strategy targets two of the most replicated: the momentum premium and the low-volatility anomaly. A third factor, quality, is used in the live strategy but excluded from the historical backtest for reasons explained below.
 

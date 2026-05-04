@@ -9,27 +9,32 @@ time-stamped live track record by sophomore year.
 
 ---
 
-## Strategy Overview
+## Strategies
 
-| Parameter | Value |
-|---|---|
-| Universe | S&P 500 (current constituents via Wikipedia) |
-| Holdings | Top 50 names by composite score |
-| Weighting | Equal weight (2% each) |
-| Rebalance | Monthly |
-| Benchmark | SPY |
+Two strategies are tracked in parallel as a live comparison experiment.
+
+| | **Top-50 (primary)** | **Top-10 (concentrated)** |
+|---|---|---|
+| Holdings | Top-50 names | Top-10 names |
+| Weighting | Equal weight (2%) | Equal weight (10%) |
+| Rebalance | Monthly | Monthly |
+| Factors | Same composite | Same composite |
+| Status | Primary strategy | Concentrated comparison |
+
+> **Top-10 disclosure:** The concentrated portfolio is included as a parallel experiment to compare live performance. It has not been validated out-of-sample. Higher concentration implies higher volatility and drawdown. Do not treat the top-10 backtest result as evidence that it outperforms top-50; in-sample CAGR differences are expected due to size effects and will be tested going forward.
 
 ### Composite Score
 
 ```
-Composite = 0.50 × momentum_z + 0.30 × lowvol_z + 0.20 × quality_z
+Composite = 0.50 × momentum_z + 0.50 × lowvol_z  (backtest, price-only)
+Composite = 0.50 × momentum_z + 0.30 × lowvol_z + 0.20 × quality_z  (live)
 ```
 
 | Factor | Definition | Direction |
 |---|---|---|
 | **Momentum** | 12-1 month total return z-score | Higher = better |
 | **Low-vol** | Trailing 12-month annualised vol z-score | Lower = better (inverted) |
-| **Quality** | Return on assets (ROA) z-score | Higher = better |
+| **Quality** | Return on assets (ROA) z-score — live only | Higher = better |
 
 ---
 
@@ -57,15 +62,19 @@ This limitation is documented in `src/data.py` and `src/factors.py`.
 Backtest period: January 2010 – December 2025 (179 monthly observations).  
 Universe: 503 current S&P 500 constituents.  Transaction costs: 5 bps one-way.
 
-| Metric | Gross | Net (5 bps) | SPY |
+*Results below are updated after each backtest run. See `results/summary_top50.json` and `results/summary_top10.json` for full details.*
+
+| Metric | Top-50 (net) | Top-10 (net) | SPY |
 |---|---|---|---|
-| CAGR | 17.60% | 17.20% | 13.91% |
-| Volatility (ann.) | 14.82% | 14.82% | 14.06% |
-| Sharpe Ratio | 1.18 | 1.15 | 1.00 |
-| Max Drawdown | -21.52% | -21.57% | -23.93% |
-| Alpha (ann.) | 5.12% | 4.77% | — |
-| Beta | 0.88 | 0.88 | — |
-| Information Ratio | 0.40 | 0.36 | — |
+| CAGR | 17.20% | 24.01% | 14.41% |
+| Volatility (ann.) | 14.82% | 22.06% | 14.32% |
+| Sharpe Ratio | 1.15 | 1.09 | 1.02 |
+| Max Drawdown | -21.57% | -32.68% | -23.93% |
+| Alpha (ann.) | 4.77% | 8.90% | — |
+| Beta | 0.88 | 1.10 | — |
+| Information Ratio | 0.36 | 0.63 | — |
+
+> **Top-10 disclaimer:** Higher CAGR comes with materially higher drawdown (-32.7% vs -21.6%) and vol (22% vs 15%). The top-10 is an in-sample result; its outperformance has not been validated out-of-sample.
 
 Charts saved to `results/` after running `python scripts/run_backtest.py`.
 
@@ -99,9 +108,11 @@ factor-strategy/
     backtest.py      # Vectorized monthly-rebalance backtest engine
     report.py        # Performance analytics and charts
     live.py          # Live pick generation (appends to results/live_picks.csv)
+    strategies.py    # Strategy config registry (top-50, top-10)
   scripts/
-    run_backtest.py  # Entry point: full historical backtest
-    run_live.py      # Entry point: generate weekly live picks
+    run_backtest.py  # Entry point: runs all strategies in one pass
+    run_live.py      # Entry point: generate monthly live picks for all strategies
+    log_change.py    # Append timestamped entry to PROJECT_LOG.md
   tests/             # pytest test suite
   data/              # Parquet cache (git-ignored)
   results/           # Backtest outputs, charts, live_picks.csv
@@ -123,10 +134,11 @@ pip install -r requirements.txt
 
 ```bash
 python scripts/run_backtest.py
+# Runs top-50 and top-10 in one pass.
+# Saves results/summary_top50.json and results/summary_top10.json.
 # Optional flags:
 #   --start 2010-01-01
 #   --end   2025-12-31
-#   --top-n 50
 #   --refresh        (force re-download)
 ```
 
@@ -134,7 +146,8 @@ python scripts/run_backtest.py
 
 ```bash
 python scripts/run_live.py
-# Appends picks to results/live_picks.csv with today's date
+# Generates picks for both strategies.
+# Saves to picks/top50/YYYY-MM-DD.md and picks/top10/YYYY-MM-DD.md.
 ```
 
 ## Running Tests

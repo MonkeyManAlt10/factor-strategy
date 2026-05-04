@@ -1,0 +1,33 @@
+{
+  "strategy_key": "concentrated_top10",
+  "strategy_name": "Quality-Momentum Top-10",
+  "gross": {
+    "cagr": 0.24597429332795873,
+    "volatility": 0.22069493542347757,
+    "sharpe": 1.1127884782561823,
+    "max_drawdown": -0.3206836919893474,
+    "benchmark_cagr": 0.13911369791098105,
+    "benchmark_volatility": 0.14058536687929393,
+    "benchmark_sharpe": 1.0015305871347642,
+    "benchmark_max_drawdown": -0.23927166789642804,
+    "information_ratio": 0.6639916472755175,
+    "alpha_annualised": 0.0942474661510293,
+    "beta": 1.1021338788871646,
+    "n_months": 179.0
+  },
+  "net": {
+    "cagr": 0.2400597061969676,
+    "volatility": 0.22064857436543467,
+    "sharpe": 1.091055560484732,
+    "max_drawdown": -0.3268110018408869,
+    "benchmark_cagr": 0.13911369791098105,
+    "benchmark_volatility": 0.14058536687929393,
+    "benchmark_sharpe": 1.0015305871347642,
+    "benchmark_max_drawdown": -0.23927166789642804,
+    "information_ratio": 0.6333838446796294,
+    "alpha_annualised": 0.08904186889557075,
+    "beta": 1.1018258897963722,
+    "n_months": 179.0
+  },
+  "cost_bps_oneway": 5.0
+}

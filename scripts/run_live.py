@@ -46,7 +46,7 @@ def write_picks_md(picks, strategy_cfg: dict, out_path: Path) -> None:
     """Write picks to a dated markdown file."""
     today = date.today().isoformat()
     lines = [
-        f"# {strategy_cfg['name']} — Live Picks {today}",
+        f"# {strategy_cfg['name']} - Live Picks {today}",
         "",
         f"*{strategy_cfg['description']}*",
         "",
@@ -59,7 +59,7 @@ def write_picks_md(picks, strategy_cfg: dict, out_path: Path) -> None:
             f"| {row['momentum']:.4f} | {row['lowvol']:.4f} | {row.get('quality', float('nan')):.4f} |"
         )
     lines += ["", f"*Generated: {today}*", ""]
-    out_path.write_text("\n".join(lines))
+    out_path.write_text("\n".join(lines), encoding="utf-8")
     logger.info("  Saved %s", out_path)
 
 

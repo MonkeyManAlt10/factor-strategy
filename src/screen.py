@@ -42,6 +42,7 @@ def composite_score(
     lowvol: pd.Series,
     quality: pd.Series | None = None,
     mode: Mode = "live",
+    weights_override: dict[str, float] | None = None,
 ) -> pd.Series:
     """Combine factor z-scores into a single composite ranking score.
 
@@ -56,6 +57,10 @@ def composite_score(
     mode:
         ``"backtest"`` uses momentum + low-vol only.
         ``"live"`` uses momentum + low-vol + quality.
+    weights_override:
+        Optional dict ``{"momentum": w1, "lowvol": w2}`` that replaces the
+        default backtest weights.  Values are re-normalised so they need not
+        sum to 1.  Ignored when ``mode="live"``.
 
     Returns
     -------
@@ -63,7 +68,7 @@ def composite_score(
         Composite score indexed by ticker, descending = more attractive.
     """
     if mode == "backtest":
-        weights = _WEIGHTS_BACKTEST
+        weights = weights_override if weights_override is not None else _WEIGHTS_BACKTEST
         factors = {"momentum": momentum, "lowvol": lowvol}
     else:
         if quality is None:

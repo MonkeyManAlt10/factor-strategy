@@ -237,7 +237,7 @@ def render_portfolio_tab(short: str, dollars_per_pick: float, strategy_name: str
                 "composite_score": "Score", "momentum": "Mom Z",
                 "lowvol": "LowVol Z", "quality": "Quality Z"
             }),
-            use_container_width=True, hide_index=True,
+            width="stretch", hide_index=True,
         )
 
     st.divider()
@@ -294,7 +294,7 @@ def render_portfolio_tab(short: str, dollars_per_pick: float, strategy_name: str
 
     st.dataframe(
         display.style.applymap(style_pnl, subset=["P&L ($)", "P&L (%)"]),
-        use_container_width=True, hide_index=True,
+        width="stretch", hide_index=True,
     )
 
     st.divider()
@@ -376,7 +376,7 @@ All results are clearly labeled. See METHODOLOGY.md for the full academic founda
             table_data["Top-50 (Primary)"].append(fmt.format(v50) if v50 is not None else "—")
             table_data["Top-10 (Concentrated)"].append(fmt.format(v10) if v10 is not None else "—")
             table_data["SPY"].append(fmt.format(spy_val) if spy_val is not None else "—")
-        st.dataframe(pd.DataFrame(table_data), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(table_data), width="stretch", hide_index=True)
     else:
         st.warning("Run `python scripts/run_backtest.py` to generate summary files.")
 
@@ -475,7 +475,7 @@ elif tab == "Performance Comparison":
             legend=dict(x=0.01, y=0.99, bgcolor="rgba(255,255,255,0.8)"),
             height=500,
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     st.divider()
     st.subheader("Rolling Performance — SIMULATED")

@@ -54,10 +54,21 @@ This limitation is documented in `src/data.py` and `src/factors.py`.
 
 ## Backtest Results
 
-*Pending first run.*
+Backtest period: January 2010 – December 2025 (179 monthly observations).  
+Universe: 503 current S&P 500 constituents.  Transaction costs: 5 bps one-way.
 
-Results will appear here after `python scripts/run_backtest.py` is executed.
-Charts are saved to `results/`.
+| Metric | Gross | Net (5 bps) | SPY |
+|---|---|---|---|
+| CAGR | 17.60% | 17.20% | 13.91% |
+| Volatility (ann.) | 14.82% | 14.82% | 14.06% |
+| Sharpe Ratio | 1.18 | 1.15 | 1.00 |
+| Max Drawdown | -21.52% | -21.57% | -23.93% |
+| Alpha (ann.) | 5.12% | 4.77% | — |
+| Beta | 0.88 | 0.88 | — |
+| Information Ratio | 0.40 | 0.36 | — |
+
+Charts saved to `results/` after running `python scripts/run_backtest.py`.  
+See `results/sensitivity.md` for robustness tests across 10 parameter variants.
 
 ---
 
@@ -124,11 +135,30 @@ pytest tests/ -v
 - **Momentum** skips the most recent month (12-1) to avoid short-term reversal.
 - **Low-vol** uses annualised monthly return standard deviation, then inverts
   so that quieter stocks score higher.
-- **No transaction costs** are modelled in the backtest.  Turnover is roughly
-  20–40% per month; in practice, slippage would reduce live returns.
+- **Transaction costs** are modelled at 5 bps one-way (10 bps round-trip) on
+  rebalanced names.  Cost drag is approximately 40 bps per year given typical
+  monthly turnover.  See `results/summary.json` for gross and net figures.
 - **Survivorship bias**: the universe uses *current* S&P 500 constituents.
   Historical backtests therefore have mild survivorship bias (excludes companies
   that were removed from the index).  This is disclosed, not corrected.
+
+---
+
+## Limitations
+
+A candid assessment of what this backtest does and does not prove:
+
+### 1. Survivorship Bias
+The universe is built from the *current* S&P 500 constituent list (sourced from Wikipedia). Companies that were delisted, went bankrupt, were acquired, or were removed from the index between 2010 and 2025 are absent from the backtest entirely. This is a well-known source of upward bias in historical performance: survivors are, by definition, companies that did well enough to remain in the index. The true gross alpha is likely lower than the 5.12% reported. This is standard for most public backtests using freely available data; correcting it requires a point-in-time index membership database (e.g., from Compustat or a data vendor).
+
+### 2. Transaction Costs
+The 5 bps one-way (10 bps round-trip) assumption is conservative for large-cap S&P 500 names but does not capture market impact for larger position sizes, bid-ask spread variation during stress periods, or short-term price impact from the buy/sell itself. A real institutional strategy would also incur borrow costs for any hedging and potentially higher slippage during low-liquidity periods.
+
+### 3. yfinance Data Quality
+All prices are sourced from Yahoo Finance via `yfinance`. The data is adjusted for splits and dividends using Yahoo's corporate action records, which occasionally contain errors (dividend adjustment reversals, incorrect split factors). No independent data validation or cross-referencing against a commercial data provider was performed. A small number of tickers may have stale or missing price observations that affect their factor scores.
+
+### 4. Point-in-Time Fundamentals
+The quality factor (return on assets) uses `yfinance` data that returns current balance sheet figures rather than the values that would have been available at each historical rebalance date. Reporting lags, restatements, and the look-ahead embedded in current fundamental data mean the quality factor cannot be included in the backtest without inflating historical performance. The backtest uses only momentum and low-vol (price-derived factors) for this reason. The live strategy uses current ROA in real time, where there is no look-ahead risk, but the backtest cannot fully replicate the live composite score.
 
 ---
 

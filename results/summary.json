@@ -27,5 +27,11 @@
     "beta": 0.8809905480085153,
     "n_months": 179.0
   },
-  "cost_bps_oneway": 5.0
+  "cost_bps_oneway": 5.0,
+  "limitations": [
+    "Survivorship bias: universe is current S&P 500 constituents only. Companies delisted or removed from the index during 2010-2025 are missing from the backtest, which overstates historical performance.",
+    "Transaction costs: modelled at 5 bps one-way (10 bps round-trip on rebalanced names). Actual costs may differ depending on broker, order size, and market conditions.",
+    "yfinance data quality: prices are adjusted for splits and dividends but may contain errors or stale values for thinly traded periods. No independent data validation was performed.",
+    "Point-in-time fundamentals: yfinance returns current ROA values, not historical quarterly values at each rebalance date. The backtest therefore excludes the quality factor entirely to avoid look-ahead bias. The live strategy uses current fundamentals in real time, but the backtest cannot fully replicate the live composite score."
+  ]
 }

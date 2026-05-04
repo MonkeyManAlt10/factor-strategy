@@ -67,8 +67,23 @@ Universe: 503 current S&P 500 constituents.  Transaction costs: 5 bps one-way.
 | Beta | 0.88 | 0.88 | — |
 | Information Ratio | 0.40 | 0.36 | — |
 
-Charts saved to `results/` after running `python scripts/run_backtest.py`.  
-See `results/sensitivity.md` for robustness tests across 10 parameter variants.
+Charts saved to `results/` after running `python scripts/run_backtest.py`.
+
+### Sensitivity Range (10 variants tested)
+
+Robustness tests across portfolio size (30/50/100), factor weights, rebalance frequency, and position sizing — all net of 5 bps one-way costs:
+
+| Variant | CAGR | Sharpe | Alpha |
+|---|---|---|---|
+| Score-weighted positions *(in-sample high — treat with caution)* | 25.36% | 1.18 | 10.20% |
+| Momentum-only factor weights | 22.85% | 1.22 | 6.93% |
+| Quarterly rebalance | 18.30% | 1.22 | 5.53% |
+| **Baseline (top-50, monthly, equal-weight)** | **17.20%** | **1.15** | **4.77%** |
+| Top-100 portfolio | 16.26% | 1.21 | 4.48% |
+| Inverse-vol-weighted positions | 15.26% | 1.09 | 3.94% |
+| Low-vol-only factor weights | 12.25% | 0.98 | 2.63% |
+
+Alpha is positive in every variant tested. Full table and interpretation in `results/sensitivity.md`.
 
 ---
 

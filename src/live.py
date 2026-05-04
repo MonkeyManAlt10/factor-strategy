@@ -96,7 +96,10 @@ def generate_picks(
 
     # Append to running track record
     if LIVE_PICKS_PATH.exists() and LIVE_PICKS_PATH.stat().st_size > 0:
-        existing = pd.read_csv(LIVE_PICKS_PATH)
+        try:
+            existing = pd.read_csv(LIVE_PICKS_PATH)
+        except pd.errors.EmptyDataError:
+            existing = pd.DataFrame()
         # Avoid duplicate entries for the same date
         existing = existing[existing["date"] != str(as_of.date())]
         combined = pd.concat([existing, picks_df], ignore_index=True)

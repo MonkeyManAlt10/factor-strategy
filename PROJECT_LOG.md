@@ -63,5 +63,10 @@ Going-forward entries are live timestamps written before each commit.
 
 ## 2026-05-04 00:30  Phase 3: Add Streamlit dashboard for live tracking and project review
 - **Files:** `dashboard/app.py`, `launch_dashboard.bat`, `requirements.txt`
-- **Commit:** (uncommitted)
+- **Commit:** `1795725`
 - **Notes:** 5-tab Streamlit dashboard (Overview, Top-50, Top-10, Performance Comparison, Project Log). Double-click launch_dashboard.bat to open in browser. Tabs show live portfolio P&L from picks files, backtest summary stats, interactive Plotly cumulative return charts, and PROJECT_LOG entries most-recent-first.
+
+## 2026-05-04 00:33  Phase 4: End-to-end verification — fix live.py EmptyDataError, generate May 2026 picks for both strategies, confirm 36 tests passing
+- **Files:** `src/live.py`, `picks/top50/2026-05-04.md`, `picks/top10/2026-05-04.md`, `results/live_picks.csv`
+- **Commit:** (uncommitted)
+- **Notes:** Fixed EmptyDataError when live_picks.csv was empty (added try/except around pd.read_csv). Force-refreshed price cache to populate 2026 data (previous cache had NaN rows for Jan-Apr 2026). Top-50 picks: 50 names as of 2026-04-30 (SNDK #1, NVDA #4). Top-10 picks: same top 10. 36/36 tests passing. Dashboard installs and loads cleanly.

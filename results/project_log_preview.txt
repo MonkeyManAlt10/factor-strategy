@@ -1,0 +1,53 @@
+PROJECT_LOG.md — FIRST FEW ENTRIES
+(Showing: header + first 4 reconstructed entries + today's 2 live entries)
+================================================================================
+
+# Project Log — Quality-Momentum Factor Strategy
+
+Append-only record of all meaningful changes to this project.
+Entries from before this file was created are marked [reconstructed from git history].
+Going-forward entries are live timestamps written before each commit.
+
+---
+
+## 2026-05-01 15:07  Initial project scaffold and first live picks  [reconstructed from git history]
+- Files: (entire project — initial commit)
+- Commit: 96e555d
+- Notes: Quality-momentum factor strategy: top-50 S&P 500, monthly rebalance,
+  equal weight. Backtest 2011–2025 gross: CAGR 17.60%, Sharpe 1.18, alpha
+  +5.12% vs SPY. First live picks as of 2026-04-30 (50 names, full
+  quality-momentum composite including ROA quality factor). 36 unit tests,
+  all passing.
+
+## 2026-05-01 15:55  Reclassify May 1 picks as dry run, push official launch to June 5  [reconstructed]
+- Files: picks/, results/, README.md
+- Commit: 60a09a1
+- Notes: Moved 2026-05-01 picks and live_picks.csv into _dry_runs/ subdirectories.
+  README updated to state live tracking begins June 5, 2026.
+
+## 2026-05-01 19:45  Add .gitignore entry for .claude/ session directory  [reconstructed]
+- Files: .gitignore
+- Commit: 0ce875b
+
+## 2026-05-03 20:29  Add daily tracker CSV for May 1 dry-run picks  [reconstructed]
+- Files: results/dry_run_tracker.csv, scripts/track_dry_run.py
+- Commit: 9651577
+
+[... 5 more reconstructed entries for 0604730, 0b0304b, 1cc0806, 983c57b, 2aeb9cf ...]
+
+## 2026-05-03 23:15  Add PROJECT_LOG.md and reconstruct full git history  <-- FIRST LIVE ENTRY
+- Files: PROJECT_LOG.md, scripts/log_change.py
+- Commit: 7d54b69
+
+## 2026-05-03 23:15  Add parallel top-10 monthly strategy alongside top-50 baseline  <-- SECOND LIVE ENTRY
+- Files: src/strategies.py, scripts/run_backtest.py, scripts/run_live.py,
+         src/report.py, METHODOLOGY.md, README.md,
+         results/summary_top50.json, results/summary_top10.json
+- Commit: 2830401
+- Notes: Backtest net results: top-50 CAGR 17.20% / Sharpe 1.15 / max DD -21.6%;
+         top-10 CAGR 24.01% / Sharpe 1.09 / max DD -32.7%.
+
+================================================================================
+HOW IT WORKS GOING FORWARD:
+  python scripts/log_change.py "message" --commit abc1234 --files src/foo.py
+  → appends timestamped entry to PROJECT_LOG.md before every commit

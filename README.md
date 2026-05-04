@@ -78,21 +78,25 @@ Universe: 503 current S&P 500 constituents.  Transaction costs: 5 bps one-way.
 
 Charts saved to `results/` after running `python scripts/run_backtest.py`.
 
-### Sensitivity Range (10 variants tested)
+### Sensitivity and Validation
 
-Robustness tests across portfolio size (30/50/100), factor weights, rebalance frequency, and position sizing — all net of 5 bps one-way costs:
+Robustness tests across factor weights, rebalance frequency, and position sizing — all net of 5 bps one-way costs. Full tables: [`results/sensitivity_top50.md`](results/sensitivity_top50.md) and [`results/sensitivity_top10.md`](results/sensitivity_top10.md).
 
-| Variant | CAGR | Sharpe | Alpha |
-|---|---|---|---|
-| Score-weighted positions *(in-sample high — treat with caution)* | 25.36% | 1.18 | 10.20% |
-| Momentum-only factor weights | 22.85% | 1.22 | 6.93% |
-| Quarterly rebalance | 18.30% | 1.22 | 5.53% |
-| **Baseline (top-50, monthly, equal-weight)** | **17.20%** | **1.15** | **4.77%** |
-| Top-100 portfolio | 16.26% | 1.21 | 4.48% |
-| Inverse-vol-weighted positions | 15.26% | 1.09 | 3.94% |
-| Low-vol-only factor weights | 12.25% | 0.98 | 2.63% |
+Alpha is positive in every variant tested for both strategies, across all parameter perturbations — the direction of outperformance is structurally robust.
 
-Alpha is positive in every variant tested. Full table and interpretation in `results/sensitivity.md`.
+### Train/Test Out-of-Sample Validation
+
+| | Train 2011–2018 | Test 2019–2025 |
+|---|---|---|
+| **Top-50 CAGR** | 16.5% | 16.3% |
+| **Top-50 Sharpe** | 1.30 | 0.92 |
+| **Top-50 Alpha** | 6.4% | 2.1% |
+| **Top-10 CAGR** | 19.3% | 32.3% |
+| **Top-10 Sharpe** | 1.04 | 1.17 |
+| **Top-10 Alpha** | 7.8% | 13.6% |
+| SPY CAGR (reference) | ~14% | ~17% |
+
+Top-50 shows mild Sharpe degradation (1.30 → 0.92) but retains positive out-of-sample alpha (+2.1%). Top-10's test outperformance reflects the mega-cap momentum period (NVDA, META, etc. in 2023–2025) — strong but concentrated in one regime. Full analysis: [`results/train_test_validation.md`](results/train_test_validation.md).
 
 ---
 
@@ -101,22 +105,29 @@ Alpha is positive in every variant tested. Full table and interpretation in `res
 ```
 factor-strategy/
   src/
-    universe.py      # S&P 500 constituent loader (Wikipedia → parquet cache)
-    data.py          # Price + fundamentals loader with parquet cache
-    factors.py       # Factor z-score calculations
-    screen.py        # Composite score + top-N selection
-    backtest.py      # Vectorized monthly-rebalance backtest engine
-    report.py        # Performance analytics and charts
-    live.py          # Live pick generation (appends to results/live_picks.csv)
-    strategies.py    # Strategy config registry (top-50, top-10)
+    universe.py        # S&P 500 constituent loader (Wikipedia → parquet cache)
+    data.py            # Price + fundamentals loader with parquet cache
+    factors.py         # Factor z-score calculations
+    screen.py          # Composite score + top-N selection
+    backtest.py        # Vectorized monthly-rebalance backtest engine
+    report.py          # Performance analytics and charts
+    live.py            # Live pick generation
+    strategies.py      # Strategy config registry (top-50, top-10)
   scripts/
-    run_backtest.py  # Entry point: runs all strategies in one pass
-    run_live.py      # Entry point: generate monthly live picks for all strategies
-    log_change.py    # Append timestamped entry to PROJECT_LOG.md
-  tests/             # pytest test suite
-  data/              # Parquet cache (git-ignored)
-  results/           # Backtest outputs, charts, live_picks.csv
-  reports/           # Monthly write-ups and commentary
+    run_backtest.py    # Run both strategies, save summary_top50.json + summary_top10.json
+    run_live.py        # Generate picks for both strategies → picks/top50/ picks/top10/
+    run_sensitivity.py # Robustness tests across parameter space → sensitivity_top50/top10.md
+    run_train_test.py  # Train/test out-of-sample split → train_test_validation.md
+    log_change.py      # Append timestamped entry to PROJECT_LOG.md
+  dashboard/
+    app.py             # Streamlit dashboard (launch via launch_dashboard.bat)
+  tests/               # pytest test suite (36 tests)
+  data/                # Parquet cache (git-ignored)
+  results/             # Backtest outputs, charts, validation reports
+  picks/               # Time-stamped live picks (top50/ top10/ _dry_runs/)
+  reports/             # Monthly write-ups and commentary
+  PROJECT_LOG.md       # Append-only change log
+  METHODOLOGY.md       # Plain-English strategy explanation (recruiter-facing)
 ```
 
 ---

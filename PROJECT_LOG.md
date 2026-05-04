@@ -56,3 +56,7 @@ Going-forward entries are live timestamps written before each commit.
 ## 2026-05-03 23:15  Add parallel top-10 monthly strategy alongside top-50 baseline. Backtest net results: top-50 CAGR 17.20% / Sharpe 1.15 / max DD -21.6%; top-10 CAGR 24.01% / Sharpe 1.09 / max DD -32.7%.
 - **Files:** `src/strategies.py`, `scripts/run_backtest.py`, `scripts/run_live.py`, `src/report.py`, `METHODOLOGY.md`, `README.md`, `results/summary_top50.json`, `results/summary_top10.json`
 - **Commit:** `2830401`
+
+## 2026-05-03 23:57  Phase 1: sensitivity tests for top-50 and top-10 (run_sensitivity.py), train/test validation (run_train_test.py), updated README and METHODOLOGY.md with dual-strategy framing and OOS results; Phase 2: remove stale single-strategy result files
+- **Files:** `scripts/run_sensitivity.py`, `scripts/run_train_test.py`, `results/sensitivity_top50.md`, `results/sensitivity_top10.md`, `results/train_test_validation.md`, `METHODOLOGY.md`, `README.md`
+- **Commit:** (uncommitted)

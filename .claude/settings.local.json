@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item *)",
+      "PowerShell(cd $HOME\\\\factor-strategy && python scripts/track_dry_run.py)",
+      "Bash(git push *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(.venv\\\\Scripts\\\\python.exe *)",
+      "PowerShell(.venv\\\\Scripts\\\\python.exe scripts/run_backtest.py 2>&1)",
+      "PowerShell(.venv\\\\Scripts\\\\python.exe scripts/run_sensitivity.py 2>&1)",
+      "PowerShell(Start-Process \"C:\\\\Users\\\\monke\\\\factor-experiments\\\\variant_comparison.png\")",
+      "Read(//mnt/c/Users/monke/**)",
+      "Bash(.venv/Scripts/python.exe rebuild/run_rebuild.py)",
+      "Bash(cmd.exe *)",
+      "PowerShell($py = \"C:\\\\Users\\\\monke\\\\factor-experiments\\\\.venv\\\\Scripts\\\\python.exe\"; & $py \"C:\\\\Users\\\\monke\\\\factor-experiments\\\\rebuild\\\\run_rebuild.py\" 2>&1)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(pip install *)",
+      "PowerShell(\\(Get-Item \"C:\\\\Users\\\\monke\\\\factor-experiments\\\\data\\\\daily_prices.parquet\"\\).Length; \\(Get-Item \"C:\\\\Users\\\\monke\\\\factor-experiments\\\\data\\\\open_prices.parquet\"\\).Length)",
+      "PowerShell(python -c \"import pandas as pd; c=pd.read_parquet\\(r'C:\\\\Users\\\\monke\\\\factor-experiments\\\\data\\\\daily_prices.parquet'\\); o=pd.read_parquet\\(r'C:\\\\Users\\\\monke\\\\factor-experiments\\\\data\\\\open_prices.parquet'\\); have=set\\(c.columns\\)&set\\(o.columns\\); print\\('Close cols:', len\\(c.columns\\), 'Open cols:', len\\(o.columns\\), 'Intersection:', len\\(have\\)\\); print\\('Close max date:', c.index.max\\(\\)\\); print\\('SPY in close:', 'SPY' in c.columns, 'SPY in open:', 'SPY' in o.columns\\)\")",
+      "Bash(python *)",
+      "Bash(git commit -m 'Update PROJECT_LOG with commit hashes for today'\\\\''s entries *)",
+      "PowerShell(Start-Process \"C:\\\\Users\\\\monke\\\\factor-strategy\\\\results\\\\headline_numbers.txt\"; Start-Sleep -Milliseconds 200; Start-Process \"C:\\\\Users\\\\monke\\\\factor-strategy\\\\results\\\\drawdown_comparison.txt\"; Start-Sleep -Milliseconds 200; Start-Process \"C:\\\\Users\\\\monke\\\\factor-strategy\\\\results\\\\project_log_preview.txt\")",
+      "PowerShell(Tee-Object *)",
+      "Bash(git rm *)",
+      "Bash(grep -E \"strategy_returns\\\\.csv$|strategy_returns_gross\\\\.csv$|^results/holdings\\\\.csv$|sensitivity\\\\.md$|spy_returns\\\\.csv$\")"
+    ]
+  }
+}

@@ -2,14 +2,19 @@
 
 ## What This Strategy Does and Why
 
-This project implements a systematic, long-only equity strategy that selects stocks from the S&P 500 universe using two quantitative signals: price momentum and low volatility. Two portfolio variants are tracked in parallel:
+This project implements a systematic, long-only equity strategy that selects stocks from the S&P 500 universe using two quantitative signals: price momentum and low volatility. The strategy scores every stock on both factors each month, ranks them, and holds the top names in an equal-weight portfolio until the next rebalance.
 
-- **Top-50 (primary):** Each month the strategy scores every stock, ranks them, and holds the top 50 in an equal-weight portfolio (2% each).
-- **Top-10 (concentrated comparison):** Same scoring, same rebalance schedule, but holds only the top 10 names (10% each). Included as a parallel live experiment to compare concentrated vs. diversified construction over time. **The top-10 has not been validated out-of-sample.** Higher concentration implies materially higher volatility and drawdown risk.
+Two portfolio variants are tracked in parallel, and the distinction between them matters:
 
-The motivation is straightforward. Academic finance has documented a handful of persistent return premia — patterns in stock returns that appear to compensate investors for bearing risk or exploiting behavioral inefficiencies. This strategy targets two of the most replicated: the momentum premium and the low-volatility anomaly. A third factor, quality, is used in the live strategy but excluded from the historical backtest for reasons explained below.
+**Top-50 is the primary strategy.** It holds 50 names at 2% each. This is the version with the stronger academic basis, the better risk-adjusted backtest performance (Sharpe 1.15 vs SPY's 1.02), and the shallower maximum drawdown (-21.6% vs -23.9%). Diversification across 50 names reduces idiosyncratic noise so that the systematic factor signal is the dominant driver of returns. This is the portfolio that will be the focus of live tracking beginning June 5, 2026.
 
-The goal is not to beat the market every month. It is to construct a process that, on average and over long horizons, tilts the portfolio toward characteristics that have historically been associated with above-benchmark returns, while keeping costs and complexity low enough that the alpha is not consumed by friction.
+**Top-10 is a concentrated comparison portfolio.** It holds 10 names at 10% each, using the same scoring and rebalance schedule. It is tracked in parallel as a live experiment to test one specific question: does the higher concentration — and the higher in-sample backtest returns that come with it (CAGR 24% vs 17% net of costs) — justify the materially higher drawdown (-32.7% vs -21.6%) and volatility (22% vs 15% annualised)? The honest answer is: we don't know yet. The in-sample numbers suggest it does not on a risk-adjusted basis (Sharpe 1.09 vs 1.15), but in-sample Sharpe comparisons on the same 15-year dataset are not statistically conclusive. The live track record will be the real test.
+
+**Top-10 carries explicit caveats:** It has not been validated out-of-sample in a way that separates genuine concentration alpha from survivorship and selection effects in the 2010–2025 data. Higher position sizing also means transaction costs matter more at scale. It is included as a comparison tool, not as a recommendation. See `results/train_test_validation.md` for the train/test split analysis.
+
+The underlying motivation is straightforward. Academic finance has documented a handful of persistent return premia — patterns in stock returns that appear to compensate investors for bearing risk or exploiting behavioral inefficiencies. This project targets two of the most replicated: the momentum premium and the low-volatility anomaly. A third factor, quality (ROA), is used in the live strategy but excluded from the historical backtest for look-ahead bias reasons explained below.
+
+The goal is not to beat the market every month. It is to construct a disciplined, rules-based process that, on average over long horizons, tilts the portfolio toward characteristics associated with above-benchmark returns, while keeping costs and complexity low enough that the alpha is not consumed by friction.
 
 ---
 
@@ -47,7 +52,7 @@ The theoretical basis draws from Novy-Marx (2013), *"The Other Side of Value: Th
 
 The weights — 50% momentum, 30% low-vol, 20% quality — are informed by the factor literature but are, in the end, somewhat arbitrary. A few considerations:
 
-**Momentum is given the most weight** because it is the strongest single factor in the backtest. The sensitivity analysis in `results/sensitivity.md` shows that momentum-only delivers approximately 6.9% annualised alpha versus SPY over 2010–2025, compared with 2.6% for low-vol-only. Giving momentum the largest share reflects this empirical signal.
+**Momentum is given the most weight** because it is the strongest single factor in the backtest. The sensitivity analysis in `results/sensitivity_top50.md` shows that momentum-only delivers approximately 6.9% annualised alpha versus SPY over 2010–2025, compared with 2.6% for low-vol-only. Giving momentum the largest share reflects this empirical signal.
 
 **Low-vol is given a meaningful allocation** because it provides diversification within the factor portfolio. Momentum strategies are known to crash during sharp market reversals — the low-vol factor tends to hold up better in those environments because the underlying stocks are less sensitive to broad market moves. Blending the two reduces the worst-case drawdown relative to pure momentum.
 

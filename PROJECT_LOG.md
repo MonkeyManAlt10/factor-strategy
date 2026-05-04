@@ -51,8 +51,8 @@ Going-forward entries are live timestamps written before each commit.
 
 ## 2026-05-03 23:15  Add PROJECT_LOG.md and reconstruct full git history
 - **Files:** `PROJECT_LOG.md`, `scripts/log_change.py`
-- **Commit:** (uncommitted)
+- **Commit:** `7d54b69`
 
 ## 2026-05-03 23:15  Add parallel top-10 monthly strategy alongside top-50 baseline. Backtest net results: top-50 CAGR 17.20% / Sharpe 1.15 / max DD -21.6%; top-10 CAGR 24.01% / Sharpe 1.09 / max DD -32.7%.
 - **Files:** `src/strategies.py`, `scripts/run_backtest.py`, `scripts/run_live.py`, `src/report.py`, `METHODOLOGY.md`, `README.md`, `results/summary_top50.json`, `results/summary_top10.json`
-- **Commit:** (uncommitted)
+- **Commit:** `2830401`

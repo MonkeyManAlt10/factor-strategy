@@ -9,7 +9,8 @@ At each month-end rebalance date:
   3. Select top-N tickers; assign equal weight (1/N each).
   4. Hold until the next rebalance date, then repeat.
 
-Transaction costs are not modelled (results/ README notes this).
+Transaction costs are modelled as a configurable one-way basis-point charge
+applied to the turnover fraction at each rebalance.
 
 Returns a ``BacktestResult`` named-tuple with the strategy return series
 and the per-date portfolio holdings.
@@ -33,9 +34,11 @@ logger = logging.getLogger(__name__)
 class BacktestResult:
     """Container for backtest outputs."""
 
-    returns: pd.Series          # Monthly strategy returns (index = date)
+    returns: pd.Series          # Monthly net returns after transaction costs (index = date)
+    gross_returns: pd.Series    # Monthly gross returns before transaction costs
     holdings: pd.DataFrame      # Columns = tickers, rows = rebalance dates, values = weights
     rebalance_dates: list[pd.Timestamp] = field(default_factory=list)
+    cost_bps_oneway: float = 5.0
 
 
 def run_backtest(
@@ -44,6 +47,7 @@ def run_backtest(
     momentum_lookback: int = 12,
     vol_lookback: int = 12,
     min_history_months: int = 13,
+    cost_bps_oneway: float = 5.0,
 ) -> BacktestResult:
     """Run a monthly equal-weight quality-momentum backtest on *prices*.
 
@@ -62,6 +66,11 @@ def run_backtest(
     min_history_months:
         Minimum months of price history required before a ticker is eligible.
         Default 13 covers the 12+1 momentum window.
+    cost_bps_oneway:
+        One-way transaction cost in basis points applied to turnover.
+        Round-trip cost on rebalanced names = 2 × cost_bps_oneway.
+        Default 5 bps one-way (10 bps round-trip) is conservative for
+        large-cap S&P 500 names.
 
     Returns
     -------
@@ -73,7 +82,10 @@ def run_backtest(
     rebalance_dates: list[pd.Timestamp] = []
     holdings_list: list[pd.Series] = []
     strategy_returns: list[float] = []
+    gross_strategy_returns: list[float] = []
     return_dates: list[pd.Timestamp] = []
+
+    prev_selected_set: set[str] = set()
 
     for i in range(min_start_idx, len(dates)):
         as_of = dates[i]
@@ -103,21 +115,44 @@ def run_backtest(
             prices.loc[as_of, available] / prices.loc[prev_date, available] - 1.0
         ).dropna()
 
-        port_return = (weights.reindex(period_ret.index).fillna(0) * period_ret).sum()
+        gross_return = (weights.reindex(period_ret.index).fillna(0) * period_ret).sum()
+
+        # --- Transaction costs: one-way bps × turnover fraction ---
+        # Turnover = fraction of portfolio that changes hands (buys or sells).
+        # Names entering or leaving the portfolio each generate a one-way cost;
+        # names staying but whose weight drifted generate no cost (equal-weight
+        # rebalance resets drift, but we charge only for additions/removals).
+        current_set = set(selected)
+        names_added = current_set - prev_selected_set
+        names_removed = prev_selected_set - current_set
+        # Each added name is a buy (one-way); each removed name is a sell (one-way).
+        # First period has no prior portfolio so full cost applies.
+        turnover = (len(names_added) + len(names_removed)) / max(len(current_set), 1)
+        cost = turnover * (cost_bps_oneway / 10_000)
+
+        net_return = gross_return - cost
 
         rebalance_dates.append(prev_date)
         holdings_list.append(weights)
-        strategy_returns.append(port_return)
+        strategy_returns.append(net_return)
+        gross_strategy_returns.append(gross_return)
         return_dates.append(as_of)
+        prev_selected_set = current_set
 
         if i % 12 == 0:
-            logger.info("Backtest progress: %s  portfolio return this month: %.2f%%", as_of.date(), port_return * 100)
+            logger.info(
+                "Backtest progress: %s  gross: %.2f%%  cost: %.1f bps  net: %.2f%%",
+                as_of.date(), gross_return * 100, cost * 10_000, net_return * 100,
+            )
 
     returns = pd.Series(strategy_returns, index=return_dates, name="strategy")
+    gross_returns = pd.Series(gross_strategy_returns, index=return_dates, name="strategy_gross")
     holdings = pd.DataFrame(holdings_list, index=rebalance_dates).fillna(0.0)
 
     return BacktestResult(
         returns=returns,
+        gross_returns=gross_returns,
         holdings=holdings,
         rebalance_dates=rebalance_dates,
+        cost_bps_oneway=cost_bps_oneway,
     )

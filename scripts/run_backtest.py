@@ -76,26 +76,39 @@ def main() -> None:
     spy_returns = spy_prices["SPY"].pct_change().dropna()
 
     # --- Backtest ---
-    logger.info("Running backtest (top-%d, price-only factors) …", args.top_n)
-    result = run_backtest(prices, top_n=args.top_n)
+    cost_bps = 5.0  # one-way basis points; 10 bps round-trip on rebalanced names
+    logger.info("Running backtest (top-%d, price-only factors, %.0f bps one-way cost) …", args.top_n, cost_bps)
+    result = run_backtest(prices, top_n=args.top_n, cost_bps_oneway=cost_bps)
     logger.info("Backtest complete: %d monthly observations", len(result.returns))
 
-    # --- Analytics ---
-    summary = performance_summary(result.returns, spy_returns)
-    print_summary(summary)
+    # --- Analytics (gross and net) ---
+    gross_summary = performance_summary(result.gross_returns, spy_returns)
+    net_summary = performance_summary(result.returns, spy_returns)
+
+    print("\n--- GROSS (before transaction costs) ---")
+    print_summary(gross_summary)
+    print("\n--- NET (after transaction costs: %.0f bps one-way) ---" % cost_bps)
+    print_summary(net_summary)
 
     # --- Save outputs ---
     result.returns.to_csv(RESULTS_DIR / "strategy_returns.csv", header=True)
+    result.gross_returns.to_csv(RESULTS_DIR / "strategy_returns_gross.csv", header=True)
     spy_returns.to_csv(RESULTS_DIR / "spy_returns.csv", header=True)
     result.holdings.to_csv(RESULTS_DIR / "holdings.csv")
 
+    combined_summary = {
+        "gross": {k: (float(v) if v is not None else None) for k, v in gross_summary.items()},
+        "net": {k: (float(v) if v is not None else None) for k, v in net_summary.items()},
+        "cost_bps_oneway": cost_bps,
+    }
     summary_path = RESULTS_DIR / "summary.json"
     with open(summary_path, "w") as f:
-        json.dump({k: (float(v) if v is not None else None) for k, v in summary.items()}, f, indent=2)
-    logger.info("Saved summary to %s", summary_path)
+        json.dump(combined_summary, f, indent=2)
+    logger.info("Saved summary (gross + net) to %s", summary_path)
 
     plot_cumulative_returns(result.returns, spy_returns)
     plot_drawdown(result.returns, spy_returns)
+    plot_cumulative_returns(result.gross_returns, spy_returns, filename="cumulative_returns_gross.png")
 
     logger.info("All results saved to %s/", RESULTS_DIR)
 

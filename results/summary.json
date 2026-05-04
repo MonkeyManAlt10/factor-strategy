@@ -1,14 +1,31 @@
 {
-  "cagr": 0.17601680766783834,
-  "volatility": 0.1482033041244824,
-  "sharpe": 1.1750478085921976,
-  "max_drawdown": -0.21516199117329704,
-  "benchmark_cagr": 0.13911369791098105,
-  "benchmark_volatility": 0.14058536687929393,
-  "benchmark_sharpe": 1.0015305871347642,
-  "benchmark_max_drawdown": -0.23927166789642804,
-  "information_ratio": 0.4015017648759262,
-  "alpha_annualised": 0.05124391483911728,
-  "beta": 0.8811586656708013,
-  "n_months": 179.0
+  "gross": {
+    "cagr": 0.17601680766783834,
+    "volatility": 0.1482033041244824,
+    "sharpe": 1.1750478085921976,
+    "max_drawdown": -0.21516199117329704,
+    "benchmark_cagr": 0.13911369791098105,
+    "benchmark_volatility": 0.14058536687929393,
+    "benchmark_sharpe": 1.0015305871347642,
+    "benchmark_max_drawdown": -0.23927166789642804,
+    "information_ratio": 0.4015017648759262,
+    "alpha_annualised": 0.05124391483911728,
+    "beta": 0.8811586656708013,
+    "n_months": 179.0
+  },
+  "net": {
+    "cagr": 0.17201055334046722,
+    "volatility": 0.1481849102590553,
+    "sharpe": 1.1518587847050605,
+    "max_drawdown": -0.21566053569353935,
+    "benchmark_cagr": 0.13911369791098105,
+    "benchmark_volatility": 0.14058536687929393,
+    "benchmark_sharpe": 1.0015305871347642,
+    "benchmark_max_drawdown": -0.23927166789642804,
+    "information_ratio": 0.3598354168841633,
+    "alpha_annualised": 0.047654360043670296,
+    "beta": 0.8809905480085153,
+    "n_months": 179.0
+  },
+  "cost_bps_oneway": 5.0
 }

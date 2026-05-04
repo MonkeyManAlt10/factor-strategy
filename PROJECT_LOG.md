@@ -66,7 +66,17 @@ Going-forward entries are live timestamps written before each commit.
 - **Commit:** `1795725`
 - **Notes:** 5-tab Streamlit dashboard (Overview, Top-50, Top-10, Performance Comparison, Project Log). Double-click launch_dashboard.bat to open in browser. Tabs show live portfolio P&L from picks files, backtest summary stats, interactive Plotly cumulative return charts, and PROJECT_LOG entries most-recent-first.
 
-## 2026-05-04 00:33  Phase 4: End-to-end verification — fix live.py EmptyDataError, generate May 2026 picks for both strategies, confirm 36 tests passing
+## 2026-05-04 00:33  Phase 4: End-to-end verification -- fix live.py EmptyDataError, generate May 2026 picks for both strategies, confirm 36 tests passing
 - **Files:** `src/live.py`, `picks/top50/2026-05-04.md`, `picks/top10/2026-05-04.md`, `results/live_picks.csv`
-- **Commit:** (uncommitted)
+- **Commit:** `6ce6b08`
 - **Notes:** Fixed EmptyDataError when live_picks.csv was empty (added try/except around pd.read_csv). Force-refreshed price cache to populate 2026 data (previous cache had NaN rows for Jan-Apr 2026). Top-50 picks: 50 names as of 2026-04-30 (SNDK #1, NVDA #4). Top-10 picks: same top 10. 36/36 tests passing. Dashboard installs and loads cleanly.
+
+## 2026-05-04  Fix UTF-8 encoding bug in picks file reading and writing
+- **Files:** `scripts/run_live.py`, `tests/test_picks_encoding.py`, `picks/top50/2026-05-04.md`, `picks/top10/2026-05-04.md`, `picks/_dry_runs/2026-05-01.md`
+- **Commit:** `1b27b13`
+- **Notes:** run_live.py now writes with encoding="utf-8" and replaces em-dash with ASCII dash in title line. All existing picks files re-encoded as UTF-8. Added 3-test test_picks_encoding.py (all passing). 39/39 tests passing.
+
+## 2026-05-04  Redesign dashboard: dark theme, professional UI, monthly history dropdown
+- **Files:** `dashboard/app.py`, `.streamlit/config.toml`
+- **Commit:** (uncommitted)
+- **Notes:** Dark theme via config.toml (navy/blue). CSS injection hides streamlit chrome, adds persistent header bar (strategy name + Austin Krauskopf attribution), tighter spacing, styled metric cards. Plotly charts use plotly_dark template with consistent color palette (blue/amber/gray). Portfolio tabs: 4-col metrics row, 2-col picks+stats layout, position P&L table with green/red coloring. Monthly dropdown (Task 3): select any historical month, shows picks + P&L for that period, "Compare to other strategy" toggle. read_text_safe() helper handles UTF-8/CP1252/latin-1 fallback.

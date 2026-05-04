@@ -60,3 +60,8 @@ Going-forward entries are live timestamps written before each commit.
 ## 2026-05-03 23:57  Phase 1: sensitivity tests for top-50 and top-10 (run_sensitivity.py), train/test validation (run_train_test.py), updated README and METHODOLOGY.md with dual-strategy framing and OOS results; Phase 2: remove stale single-strategy result files
 - **Files:** `scripts/run_sensitivity.py`, `scripts/run_train_test.py`, `results/sensitivity_top50.md`, `results/sensitivity_top10.md`, `results/train_test_validation.md`, `METHODOLOGY.md`, `README.md`
 - **Commit:** (uncommitted)
+
+## 2026-05-04 00:30  Phase 3: Add Streamlit dashboard for live tracking and project review
+- **Files:** `dashboard/app.py`, `launch_dashboard.bat`, `requirements.txt`
+- **Commit:** (uncommitted)
+- **Notes:** 5-tab Streamlit dashboard (Overview, Top-50, Top-10, Performance Comparison, Project Log). Double-click launch_dashboard.bat to open in browser. Tabs show live portfolio P&L from picks files, backtest summary stats, interactive Plotly cumulative return charts, and PROJECT_LOG entries most-recent-first.

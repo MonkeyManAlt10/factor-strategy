@@ -1,5 +1,25 @@
 # Strategy Methodology
 
+## On Running Two Strategies
+
+This project tracks two portfolios — top-50 and top-10 — but they are not two equally validated strategies. The distinction matters and should be understood before reading any of the numbers below.
+
+**Top-50 is the primary, academically grounded strategy.** It holds 50 names at 2% each. It is the version this project stands behind: it has the better risk-adjusted backtest (Sharpe 1.15 vs SPY's 1.02), the shallower drawdown (-21.6% vs SPY's -23.9%), and the more defensible out-of-sample behavior (Sharpe declines mildly from 1.30 to 0.92 between the training and test periods, with alpha still positive at +2.1%). Live tracking write-ups will focus on this portfolio.
+
+**Top-10 is a concentration experiment, not a validated strategy.** It holds 10 names at 10% each, using the same scoring logic. It is included to answer one specific live question: does extra concentration earn its risk premium? Three properties make it explicitly not a strategy we are recommending:
+
+1. **Worse Sharpe in-sample.** Top-10's higher CAGR (24% vs 17%) does not survive risk-adjustment. Its Sharpe (1.09) is lower than top-50's (1.15). Buying CAGR with extra volatility is the kind of trade that looks attractive in a backtest and disappointing in a drawdown.
+
+2. **Materially worse drawdown.** Top-10's max drawdown of -32.7% is 11 percentage points deeper than top-50's. For a portfolio that is meant to be held through a real cycle, this is not a small difference.
+
+3. **Suspicious out-of-sample behavior.** Top-10's alpha *increased* from the training period (+7.8%) to the test period (+13.6%), and its Sharpe *improved* (1.04 → 1.17). When an out-of-sample test produces *better* results than the in-sample fit, the strongly likely explanation is regime change, not signal robustness. The 2023–2025 test window contains the mega-cap momentum rally, which a 10-name concentrated portfolio is disproportionately exposed to. A different test window — one that included the 2000–2002 tech bust, the 2008 financial crisis, or the early-2022 momentum crash — would very plausibly have produced the opposite result. The honest reading is that top-10 is regime-sensitive in a way that the test period happened to flatter.
+
+The top-10 portfolio is tracked live because the live track record is the only honest test that can resolve the question. It is not promoted to "strategy" status until that test is run, and may never be.
+
+When you see "the strategy" in this document, it refers to top-50 unless otherwise stated. Top-10 numbers are reported for comparison and learning, not as evidence of an edge.
+
+---
+
 ## What This Strategy Does and Why
 
 This project implements a systematic, long-only equity strategy that selects stocks from the S&P 500 universe using two quantitative signals: price momentum and low volatility. The strategy scores every stock on both factors each month, ranks them, and holds the top names in an equal-weight portfolio until the next rebalance.

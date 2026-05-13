@@ -837,7 +837,7 @@ def style_chart(fig: go.Figure, height: int = 400) -> go.Figure:
             bgcolor="rgba(0,0,0,0)",
             borderwidth=0,
             font=dict(family="Inter, sans-serif", size=12, color=TEXT_SECONDARY),
-            itemgap=20,
+            tracegroupgap=8,
         ),
         margin=dict(l=54, r=20, t=48, b=72),
     )
@@ -1351,15 +1351,18 @@ with tab_overview:
                 "max_drawdown": "benchmark_max_drawdown",
             }
             tbl: dict[str, list] = {
-                "Metric": [], "Top-50": [], "Top-10": [], "SPY": []
+                "Metric": [],
+                "Top-50 · Primary": [],
+                "Top-10 · Comparison (Experimental)": [],
+                "SPY": [],
             }
             for lbl, key, fmt in rows_def:
                 tbl["Metric"].append(lbl)
                 v50 = s50.get("net", {}).get(key)
                 v10 = s10.get("net", {}).get(key)
                 spy = s50.get("net", {}).get(spy_map.get(key, ""))
-                tbl["Top-50"].append(fmt.format(v50) if v50 is not None else "—")
-                tbl["Top-10"].append(fmt.format(v10) if v10 is not None else "—")
+                tbl["Top-50 · Primary"].append(fmt.format(v50) if v50 is not None else "—")
+                tbl["Top-10 · Comparison (Experimental)"].append(fmt.format(v10) if v10 is not None else "—")
                 tbl["SPY"].append(fmt.format(spy)    if spy is not None else "—")
 
             st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
@@ -1440,12 +1443,37 @@ with tab_top50:
 with tab_top10:
     section_header("Top-10 Strategy — Concentrated Comparison")
     st.caption("Equal weight · 10% per position · monthly rebalance · SIMULATED / DRY RUN")
-    st.warning(
-        "**Concentrated comparison portfolio** — not the primary strategy. "
-        "Higher in-sample returns (24% CAGR) but materially higher drawdown "
-        "(-32.7% vs -21.6%) and no separate OOS validation. Tracked for "
-        "experimental comparison only."
-    )
+    st.markdown(f"""
+<div style="
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.35);
+    border-left: 3px solid {ACCENT_AMBER};
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    color: {TEXT_PRIMARY};
+">
+  <div style="
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: {ACCENT_AMBER};
+      text-transform: uppercase;
+      margin-bottom: 6px;
+  ">EXPERIMENTAL — NOT A VALIDATED STRATEGY</div>
+  Top-10 is a concentrated <b>comparison</b> portfolio, not a validated strategy.
+  Out-of-sample testing showed alpha <b>increasing</b> from training to testing
+  periods (7.8% → 13.6%), which almost certainly reflects regime-dependent
+  exposure to the 2023–2025 mega-cap momentum rally rather than a robust signal.
+  Top-10 has worse Sharpe (1.09 vs 1.15) and materially worse drawdown
+  (-32.7% vs -21.6%) than the primary top-50 strategy. Tracked for learning and
+  live comparison only.
+</div>
+""", unsafe_allow_html=True)
     render_portfolio_tab("top10", 100.0, "Top-10")
 
 

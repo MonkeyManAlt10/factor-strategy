@@ -11,17 +11,20 @@ time-stamped live track record by sophomore year.
 
 ## Strategies
 
-Two strategies are tracked in parallel as a live comparison experiment.
+**Top-50 is the primary strategy.** It is the version that is academically grounded, backtested with the best risk-adjusted performance (Sharpe 1.15 vs SPY's 1.02), and that the live tracking write-ups will focus on.
 
-| | **Top-50 (primary)** | **Top-10 (concentrated)** |
+**Top-10 is a concentrated comparison portfolio**, run in parallel to test whether the additional concentration risk is worth the additional return. It is an experiment, not a validated strategy. See the explicit caveat below.
+
+| | **Top-50 — Primary** | **Top-10 — Comparison (experimental)** |
 |---|---|---|
-| Holdings | Top-50 names | Top-10 names |
+| Holdings | 50 names | 10 names |
 | Weighting | Equal weight (2%) | Equal weight (10%) |
 | Rebalance | Monthly | Monthly |
 | Factors | Same composite | Same composite |
-| Status | Primary strategy | Concentrated comparison |
+| Role | Primary strategy, focus of live tracking | Parallel experiment in concentration |
 
-> **Top-10 disclosure:** The concentrated portfolio is included as a parallel experiment to compare live performance. It has not been validated out-of-sample. Higher concentration implies higher volatility and drawdown. Do not treat the top-10 backtest result as evidence that it outperforms top-50; in-sample CAGR differences are expected due to size effects and will be tested going forward.
+> **Top-10 caveat — read this before interpreting top-10 numbers.**
+> Top-10's out-of-sample results showed alpha **increasing** from training to testing periods (7.8% → 13.6%), which is unusual and almost certainly reflects regime-specific exposure to the 2023–2025 mega-cap momentum rally rather than a robust signal. We continue to track top-10 as a learning exercise and live comparison, but it should not be interpreted as a validated strategy. Higher in-sample CAGR (24% vs 17%) comes with worse risk-adjusted return (Sharpe 1.09 vs 1.15) and materially worse drawdown (-32.7% vs -21.6%). The top-50 backtest is the version we stand behind.
 
 ### Composite Score
 
@@ -64,17 +67,30 @@ Universe: 503 current S&P 500 constituents.  Transaction costs: 5 bps one-way.
 
 *Results below are updated after each backtest run. See `results/summary_top50.json` and `results/summary_top10.json` for full details.*
 
-| Metric | Top-50 (net) | Top-10 (net) | SPY |
-|---|---|---|---|
-| CAGR | 17.20% | 24.01% | 14.41% |
-| Volatility (ann.) | 14.82% | 22.06% | 14.32% |
-| Sharpe Ratio | 1.15 | 1.09 | 1.02 |
-| Max Drawdown | -21.57% | -32.68% | -23.93% |
-| Alpha (ann.) | 4.77% | 8.90% | — |
-| Beta | 0.88 | 1.10 | — |
-| Information Ratio | 0.36 | 0.63 | — |
+**Primary: Top-50 (net of costs)**
 
-> **Top-10 disclaimer:** Higher CAGR comes with materially higher drawdown (-32.7% vs -21.6%) and vol (22% vs 15%). The top-10 is an in-sample result; its outperformance has not been validated out-of-sample.
+| Metric | Top-50 | SPY | Edge |
+|---|---|---|---|
+| CAGR | **17.20%** | 14.41% | +2.79 pp |
+| Volatility (ann.) | **14.82%** | 14.32% | +0.50 pp |
+| Sharpe Ratio | **1.15** | 1.02 | +0.13 |
+| Max Drawdown | **-21.57%** | -23.93% | +2.36 pp |
+| Alpha (ann.) | **4.77%** | — | — |
+| Beta | 0.88 | — | — |
+| Information Ratio | 0.36 | — | — |
+
+**Comparison: Top-10 (experimental, net of costs)**
+
+| Metric | Top-10 | SPY | vs Top-50 |
+|---|---|---|---|
+| CAGR | 24.01% | 14.41% | +6.81 pp |
+| Volatility (ann.) | 22.06% | 14.32% | +7.24 pp |
+| Sharpe Ratio | 1.09 | 1.02 | **−0.06** |
+| Max Drawdown | -32.68% | -23.93% | **−11.11 pp** |
+| Alpha (ann.) | 8.90% | — | — |
+| Beta | 1.10 | — | — |
+
+> **Top-10 disclaimer:** Higher CAGR comes with materially higher drawdown (-32.7% vs -21.6%) and vol (22% vs 15%), and **lower** Sharpe (1.09 vs 1.15). The top-10 is an in-sample result whose out-of-sample test showed alpha *increasing* into the test period — almost certainly a regime artifact, not a validated edge. Treat as an experimental comparison only.
 
 Charts saved to `results/` after running `python scripts/run_backtest.py`.
 
@@ -96,7 +112,9 @@ Alpha is positive in every variant tested for both strategies, across all parame
 | **Top-10 Alpha** | 7.8% | 13.6% |
 | SPY CAGR (reference) | ~14% | ~17% |
 
-Top-50 shows mild Sharpe degradation (1.30 → 0.92) but retains positive out-of-sample alpha (+2.1%). Top-10's test outperformance reflects the mega-cap momentum period (NVDA, META, etc. in 2023–2025) — strong but concentrated in one regime. Full analysis: [`results/train_test_validation.md`](results/train_test_validation.md).
+Top-50 shows mild Sharpe degradation (1.30 → 0.92) but retains positive out-of-sample alpha (+2.1%) — a meaningful but expected drop that is what an honest OOS test looks like.
+
+Top-10's results, by contrast, **improved** from train to test — alpha went from 7.8% to 13.6% and Sharpe from 1.04 to 1.17. This is suspicious, not encouraging. Strategies that get *better* out-of-sample almost always reflect a regime change rather than a genuine signal. In this case, the 2023–2025 test window includes the mega-cap momentum rally (NVDA, META, GOOGL, etc.), and a 10-name concentrated portfolio gets disproportionately exposed to it. A different 7-year test window — for example, one containing the 2000–2002 tech bust or the 2008 financial crisis — would almost certainly have produced the opposite result. Read top-10's OOS numbers as evidence of regime sensitivity, not as validation. Full analysis: [`results/train_test_validation.md`](results/train_test_validation.md).
 
 ---
 

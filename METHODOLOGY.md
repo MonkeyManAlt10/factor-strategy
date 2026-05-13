@@ -68,6 +68,29 @@ The theoretical basis draws from Novy-Marx (2013), *"The Other Side of Value: Th
 
 ---
 
+## The Quality Factor Caveat
+
+This deserves to be stated as plainly as possible, because it has direct implications for how the backtest numbers should be read:
+
+**The backtest does not represent the strategy that is being run live.**
+
+- The **backtest** (2010–2025) uses two factors: momentum (50%) and low-vol (50%).
+- The **live strategy** (June 2026 onward) uses three factors: momentum (50%), low-vol (30%), and quality / ROA (20%).
+
+These are not the same composite. They cannot be. Quality requires point-in-time fundamental data, and `yfinance` only returns the *current* values of those fundamentals. Putting today's ROA at a 2015 rebalance date is the textbook look-ahead bias error, and the resulting backtest numbers would be meaningfully inflated. The honest choice is to leave quality out of the historical simulation entirely, and to be explicit that the live strategy is therefore an unbacktested variant.
+
+A few practical points worth being clear about:
+
+1. **The live strategy has never been backtested in its exact live form.** The closest the backtest gets is the price-only momentum + low-vol composite, with weights re-normalised over the two factors that are available. The live composite — momentum 50%, low-vol 30%, quality 20% — has no historical performance record on this dataset.
+
+2. **Quality is the smallest of the three live weights, so its effect on rankings is probably modest.** A 20% weight means the quality z-score has roughly the same influence as a 20% shift in either of the other two factors. It will tilt the live portfolio toward more profitable names at the margin but will not radically change the composition. In practice, on the most recent live picks, the top-10 names that come out of the price-only composite and the full live composite tend to overlap substantially.
+
+3. **This is a constraint, not a design choice.** A proper institutional version of this strategy would use a point-in-time fundamentals dataset (Compustat, FactSet, Bloomberg) and would include quality in the backtest alongside the live strategy. The split between a two-factor backtest and a three-factor live strategy is forced by the free-data limitation. If point-in-time data became available, the two would be reconciled.
+
+4. **The honest interpretation:** the backtest provides evidence that *the price-only composite* (momentum + low-vol) has produced positive alpha historically on this universe and dataset. The live strategy adds a third signal that the literature suggests is also productive but that this project cannot independently validate with this data. Whether the live three-factor version outperforms or underperforms the two-factor backtest version is genuinely unknown until the live track record is in.
+
+---
+
 ## Why These Weights?
 
 The weights — 50% momentum, 30% low-vol, 20% quality — are informed by the factor literature but are, in the end, somewhat arbitrary. A few considerations:

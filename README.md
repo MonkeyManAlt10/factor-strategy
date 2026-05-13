@@ -205,17 +205,17 @@ pytest tests/ -v
 
 A candid assessment of what this backtest does and does not prove:
 
-### 1. Survivorship Bias
+### 1. The backtest does not represent the strategy that will be run live
+This is the most important caveat and worth stating in plain English. The **backtest** uses two factors — momentum (50%) and low-vol (50%) — because the third factor (quality / ROA) requires point-in-time historical fundamentals, and the free data source (`yfinance`) returns only *current* fundamental values. Putting today's ROA at past rebalance dates would introduce look-ahead bias, so quality is excluded from the historical simulation entirely. The **live strategy**, by contrast, uses all three factors at momentum 50% / low-vol 30% / quality 20%, because at the moment of live pick generation there is no look-ahead risk. The practical consequence: the 17.20% net CAGR / 1.15 Sharpe / 4.77% alpha numbers from the backtest describe a two-factor composite that is *not* the composite this project is recording live. The closest interpretation is that the price-only composite has demonstrably produced positive alpha on this universe and period; whether the addition of a 20% quality overlay improves, worsens, or roughly preserves that result is genuinely unknown until the live track record accumulates. Quality being only 20% of the composite means the effect on rankings is probably modest — but it is unverified.
+
+### 2. Survivorship Bias
 The universe is built from the *current* S&P 500 constituent list (sourced from Wikipedia). Companies that were delisted, went bankrupt, were acquired, or were removed from the index between 2010 and 2025 are absent from the backtest entirely. This is a well-known source of upward bias in historical performance: survivors are, by definition, companies that did well enough to remain in the index. The true gross alpha is likely lower than the 5.12% reported. This is standard for most public backtests using freely available data; correcting it requires a point-in-time index membership database (e.g., from Compustat or a data vendor).
 
-### 2. Transaction Costs
+### 3. Transaction Costs
 The 5 bps one-way (10 bps round-trip) assumption is conservative for large-cap S&P 500 names but does not capture market impact for larger position sizes, bid-ask spread variation during stress periods, or short-term price impact from the buy/sell itself. A real institutional strategy would also incur borrow costs for any hedging and potentially higher slippage during low-liquidity periods.
 
-### 3. yfinance Data Quality
+### 4. yfinance Data Quality
 All prices are sourced from Yahoo Finance via `yfinance`. The data is adjusted for splits and dividends using Yahoo's corporate action records, which occasionally contain errors (dividend adjustment reversals, incorrect split factors). No independent data validation or cross-referencing against a commercial data provider was performed. A small number of tickers may have stale or missing price observations that affect their factor scores.
-
-### 4. Point-in-Time Fundamentals
-The quality factor (return on assets) uses `yfinance` data that returns current balance sheet figures rather than the values that would have been available at each historical rebalance date. Reporting lags, restatements, and the look-ahead embedded in current fundamental data mean the quality factor cannot be included in the backtest without inflating historical performance. The backtest uses only momentum and low-vol (price-derived factors) for this reason. The live strategy uses current ROA in real time, where there is no look-ahead risk, but the backtest cannot fully replicate the live composite score.
 
 ---
 

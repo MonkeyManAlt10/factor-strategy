@@ -89,3 +89,7 @@ Going-forward entries are live timestamps written before each commit.
 ## 2026-05-12 18:52  Add honest framing for top-10 across docs and dashboard
 - **Files:** `README.md`, `METHODOLOGY.md`, `dashboard/app.py`
 - **Commit:** (uncommitted)
+
+## 2026-05-12 18:52  Document quality factor backtest/live divergence in methodology
+- **Files:** `METHODOLOGY.md`, `README.md`
+- **Commit:** (uncommitted)

@@ -139,7 +139,7 @@ factor-strategy/
     log_change.py      # Append timestamped entry to PROJECT_LOG.md
   dashboard/
     app.py             # Streamlit dashboard (launch via launch_dashboard.bat)
-  tests/               # pytest test suite (36 tests)
+  tests/               # pytest test suite (39 tests)
   data/                # Parquet cache (git-ignored)
   results/             # Backtest outputs, charts, validation reports
   picks/               # Time-stamped live picks (top50/ top10/ _dry_runs/)
@@ -194,7 +194,8 @@ pytest tests/ -v
   so that quieter stocks score higher.
 - **Transaction costs** are modelled at 5 bps one-way (10 bps round-trip) on
   rebalanced names.  Cost drag is approximately 40 bps per year given typical
-  monthly turnover.  See `results/summary.json` for gross and net figures.
+  monthly turnover.  See `results/summary_top50.json` and
+  `results/summary_top10.json` for gross and net figures.
 - **Survivorship bias**: the universe uses *current* S&P 500 constituents.
   Historical backtests therefore have mild survivorship bias (excludes companies
   that were removed from the index).  This is disclosed, not corrected.
